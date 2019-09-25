@@ -31,7 +31,6 @@ int execv_mod(char *argv[])
 
     /* Si no ese un camino me fijo en directorio actual luego en PATH */
 
-
     /* Executar en el actual directorio */
     char buffer[MAX_SIZE]; //buscar algo mejor que un arreglo te tamanio fijo ya que es propenso a problemas
     char *test = getcwd(buffer, MAX_SIZE);
@@ -46,8 +45,27 @@ int execv_mod(char *argv[])
 
     /* iterar sobre los subcaminos e intentar ejecutar */
 
-    //const char *path = getenv("PATH");
-    //const char *subpath;
+    char *path = getenv("PATH");
+    char *subpath = NULL;
+    char *delim = ":";
+
+    subpath = strtok(path, delim);
+
+    memset(buffer, 0, sizeof buffer);
+
+    while (subpath != NULL)
+    {
+        strcat(buffer, subpath);
+        strcat(buffer, "/");
+        strcat(buffer, argv[0]);
+
+        execv(buffer, argv);
+
+        memset(buffer, 0, sizeof buffer);
+        subpath = strtok(NULL, delim);
+    }
+    
+    /* NOTA: creo que usar strcat no es lo ideal, seguro hay otra forma mucho mejor y optima */
     return -1;
 }
 
