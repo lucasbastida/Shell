@@ -15,6 +15,7 @@
 #include <dirent.h>
 #include <errno.h>
 
+
 #define TRUE 1
 #define FALSE 0
 
@@ -64,7 +65,7 @@ int execv_mod(char *argv[])
         memset(buffer, 0, sizeof buffer);
         subpath = strtok(NULL, delim);
     }
-    
+
     /* NOTA: creo que usar strcat no es lo ideal, seguro hay otra forma mucho mejor y optima */
     return -1;
 }
@@ -122,6 +123,27 @@ int execute(char **args)
 {
 
     /* Personalized commands */
+    if (strcmp(args[0], "quit") == 0)
+    {
+        exit(EXIT_SUCCESS);
+    }
+
+    if (strcmp(args[0], "clr") == 0)
+    {
+        fprintf(stdout, "\E[H\E[2J");
+        return 0;
+    }
+
+    if (strcmp(args[0], "echo") == 0)
+    {
+        for (size_t pos = 1; args[pos] != NULL; pos++)
+        {
+            fprintf(stdout, "%s ", args[pos]);
+        }
+        fprintf(stdout, "\n");
+        return 0;
+    }
+
     if (strcmp(args[0], "cd") == 0)
     {
         return cd_func(args);
