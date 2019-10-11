@@ -33,7 +33,7 @@ int cd_func(char **args)
 
         char* cwd =  getcwd(NULL,0);
         setenv("PWD", getcwd(NULL,0), 1);
-        
+
         free(cwd);
         return 0;
     }
@@ -49,7 +49,7 @@ int run_cmd(char **args)
 
     if (strcmp(args[0], "clr") == 0)
     {
-        fprintf(stdout, "\033[H\033[2J");
+        fprintf(stdout, "\033[H\033[2J");//ASCII escape sequence
         return 0;
     }
 
