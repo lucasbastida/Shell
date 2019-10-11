@@ -1,5 +1,7 @@
 #define _GNU_SOURCE
 
+#include "internal_commands.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,7 +15,6 @@
 #include <dirent.h>
 #include <errno.h>
 
-#include "internal_commands.h"
 
 int cd_func(char **args)
 {
@@ -29,7 +30,11 @@ int cd_func(char **args)
             fprintf(stderr, "Error. Couldnt change the directory...\n");
             return -1;
         }
-        setenv("PWD", args[1], 1);
+
+        char* cwd =  getcwd(NULL,0);
+        setenv("PWD", getcwd(NULL,0), 1);
+        
+        free(cwd);
         return 0;
     }
     return 1;
