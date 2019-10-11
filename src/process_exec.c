@@ -1,6 +1,7 @@
 #define _GNU_SOURCE
 
 #include "process_exec.h"
+#include "internal_commands.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -70,25 +71,6 @@ int execv_mod(char *argv[])
     return -1;
 }
 
-int cd_func(char **args)
-{
-    if (args[1] == NULL)
-    {
-        fprintf(stderr, "Error. cd sin argumentos...\n");
-    }
-    else
-    {
-        int change_pwd = chdir(args[1]);
-        if (change_pwd != 0)
-        {
-            fprintf(stderr, "Error. Couldnt change the directory...\n");
-            return -1;
-        }
-        setenv("PWD", args[1], 1);
-        return 0;
-    }
-    return 1;
-}
 
 int fork_process(char **args, int is_background_proc)
 {
@@ -123,30 +105,8 @@ int execute(char **args)
 {
 
     /* Personalized commands */
-    if (strcmp(args[0], "quit") == 0)
-    {
-        exit(EXIT_SUCCESS);
-    }
-
-    if (strcmp(args[0], "clr") == 0)
-    {
-        fprintf(stdout, "\E[H\E[2J");
+    if(run_cmd(args) == 0){
         return 0;
-    }
-
-    if (strcmp(args[0], "echo") == 0)
-    {
-        for (size_t pos = 1; args[pos] != NULL; pos++)
-        {
-            fprintf(stdout, "%s ", args[pos]);
-        }
-        fprintf(stdout, "\n");
-        return 0;
-    }
-
-    if (strcmp(args[0], "cd") == 0)
-    {
-        return cd_func(args);
     }
 
     /* Program calls */
