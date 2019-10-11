@@ -1,5 +1,9 @@
-#include "defines.h"
 #include "file_manager.h"
+#include <stdio.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <string.h>
+#define MAXSIZE 1024
 
 char *read_file(char *name)
 {
@@ -27,7 +31,7 @@ char *get_fdescriptor(char *path)
     if (dr == NULL)
     {
         printf("Could not open directory!\n");
-        return STRINGERROR;
+        return NULL;
     }
 
     struct dirent *de;

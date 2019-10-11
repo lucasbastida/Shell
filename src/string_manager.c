@@ -1,7 +1,11 @@
 #define _GNU_SOURCE
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "string_manager.h"
-#include "defines.h"
+
+#define MAXSIZE 1024
 
 char *replace_str(char *str, char *orig, char *rep)
 {

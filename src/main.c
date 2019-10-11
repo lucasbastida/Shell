@@ -1,7 +1,11 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "string_manager.h"
-#include "defines.h"
 #include "file_manager.h"
 #include "process_exec.h"
+
+#define HOSTNAMEPATH "/proc/sys/kernel/hostname"
 
 int main()
 {
