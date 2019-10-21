@@ -125,7 +125,7 @@ int fork_process(char **args, int is_background_proc)
 
         if (run_cmd(args) == 0)
         {
-            exit(EXIT_SUCCESS);
+            _exit(EXIT_SUCCESS);//https://stackoverflow.com/questions/50914178/c-file-pointer-changing-after-fork-and-failed-exec
         }
 
         execv_mod(args);

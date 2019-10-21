@@ -60,6 +60,7 @@ int run_cmd(char **args)
             fprintf(stdout, "%s ", args[pos]);
         }
         fprintf(stdout, "\n");
+        fflush(stdout);
         return 0;
     }
 
