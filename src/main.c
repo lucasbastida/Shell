@@ -39,7 +39,7 @@ void batch_mode(char *file)
 
     while (fgets(buffer, sizeof buffer, fp) != NULL)
     {
-        //printf("LINE---%s", buffer);
+        // printf("LINE---%s", buffer);
         tokens = read_tokens(buffer);
         execute(tokens);
         free(tokens);
@@ -63,7 +63,7 @@ void command_mode()
     {
         pwd = getenv("PWD");
 
-        printf("%s@%s:%s$", username, hostname, replace_str(pwd, getenv("HOME"), "~"));
+        printf("%s@%s:%s$ ", username, hostname, replace_str(pwd, getenv("HOME"), "~"));
         input = read_input();
         tokens = read_tokens(input);
 

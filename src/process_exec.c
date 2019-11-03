@@ -123,9 +123,15 @@ int fork_process(char **args, int is_background_proc)
             dup2(fd, 1);
         }
 
-        if (run_cmd(args) == 0)
+        if (strcmp(args[0], "echo") == 0)
         {
-            _exit(EXIT_SUCCESS);//https://stackoverflow.com/questions/50914178/c-file-pointer-changing-after-fork-and-failed-exec
+            for (size_t pos = 1; args[pos] != NULL; pos++)
+            {
+                fprintf(stdout, "%s ", args[pos]);
+            }
+            fprintf(stdout, "\n");
+            fflush(stdout);
+            exit(EXIT_SUCCESS);
         }
 
         execv_mod(args);
@@ -144,6 +150,10 @@ int fork_process(char **args, int is_background_proc)
 
 int execute(char **args)
 {
+    if (run_cmd(args) == 0)
+    {
+        return 0; //https://stackoverflow.com/questions/50914178/c-file-pointer-changing-after-fork-and-failed-exec
+    }
 
     int token_pos = 0;
 

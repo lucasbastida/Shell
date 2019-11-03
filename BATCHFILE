@@ -1,7 +1,14 @@
 echo hollo
 echo hellow 2
 ls
+mkdir archivotest
+cd archivotest
+echo pass 2 > asdf
 echo passing to hello again my old friendsdfsadf > asdf
+ls
+cat asdf
 echo hello world again
+cd ..
+echo test2 > asdf2
 quit
-clr
+

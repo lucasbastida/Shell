@@ -53,16 +53,16 @@ int run_cmd(char **args)
         return 0;
     }
 
-    if (strcmp(args[0], "echo") == 0)
-    {
-        for (size_t pos = 1; args[pos] != NULL; pos++)
-        {
-            fprintf(stdout, "%s ", args[pos]);
-        }
-        fprintf(stdout, "\n");
-        fflush(stdout);
-        return 0;
-    }
+    // if (strcmp(args[0], "echo") == 0)
+    // {
+    //     for (size_t pos = 1; args[pos] != NULL; pos++)
+    //     {
+    //         fprintf(stdout, "%s ", args[pos]);
+    //     }
+    //     fprintf(stdout, "\n");
+    //     fflush(stdout);
+    //     return 0;
+    // }
 
     if (strcmp(args[0], "cd") == 0)
     {
