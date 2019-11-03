@@ -150,9 +150,10 @@ int fork_process(char **args, int is_background_proc)
 
 int execute(char **args)
 {
+    /* Run personalized commands */
     if (run_cmd(args) == 0)
     {
-        return 0; //https://stackoverflow.com/questions/50914178/c-file-pointer-changing-after-fork-and-failed-exec
+        return 0;
     }
 
     int token_pos = 0;

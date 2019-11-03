@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "string_manager.h"
 #include "file_manager.h"
@@ -51,9 +52,15 @@ void batch_mode(char *file)
 
 void command_mode()
 {
+    FILE *fp = fopen(HOSTNAMEPATH, "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+
+    char hostname[1024];
+    fgets(hostname, sizeof hostname, fp);
+    hostname[strcspn(hostname, "\n")] = 0;
 
     char *username = getenv("USER");
-    char *hostname = read_file(HOSTNAMEPATH);
     char *pwd;
 
     char *input;
