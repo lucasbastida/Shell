@@ -23,19 +23,25 @@
 
 int execv_mod(char *argv[])
 {
+    /* 
+        Trato de ubicar al ejecutable en la siguiente orden:
+        1- si contiene / al inicio, es decir, es un camino a un archivo
+        2- me fijo en el directorio actual
+        3- trato de ubicar el archivo los los directorios de PATH
+     */
+
     /* Si contiene "/" entonces es un camino */
     if (strchr(argv[0], '/') != NULL)
     {
-        execv(argv[0], argv); //if execv returns then an error occurred
+        //if execv returns then an error occurred
+        execv(argv[0], argv);
         return -1;
     }
-
-    /* Si no ese un camino me fijo en directorio actual luego en PATH */
 
     /* Executar en el actual directorio */
     char buffer[MAX_SIZE]; //buscar algo mejor que un arreglo te tamanio fijo ya que es propenso a problemas
     char *test = getcwd(buffer, MAX_SIZE);
-    if (test == NULL /* condition */)
+    if (test == NULL)
     {
         printf("ERR\n");
     }
