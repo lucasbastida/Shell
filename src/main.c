@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include "string_manager.h"
-#include "file_manager.h"
 #include "process_exec.h"
 
 #define HOSTNAMEPATH "/proc/sys/kernel/hostname"
