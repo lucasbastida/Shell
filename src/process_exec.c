@@ -30,16 +30,15 @@ int execv_mod(char *argv[])
         3- trato de ubicar el archivo los los directorios de PATH
      */
 
-    /* Si contiene "/" entonces es un camino */
+    //1
     if (strchr(argv[0], '/') != NULL)
     {
-        //if execv returns then an error occurred
-        execv(argv[0], argv);
+        execv(argv[0], argv); //if execv returns then an error occurred
         return -1;
     }
 
-    /* Executar en el actual directorio */
-    char buffer[MAX_SIZE]; //buscar algo mejor que un arreglo te tamanio fijo ya que es propenso a problemas
+    //2
+    char buffer[MAX_SIZE];
     char *test = getcwd(buffer, MAX_SIZE);
     if (test == NULL)
     {
@@ -50,8 +49,7 @@ int execv_mod(char *argv[])
     strcat(buffer, argv[0]);
     execv(buffer, argv);
 
-    /* iterar sobre los subcaminos e intentar ejecutar */
-
+    //3
     char *path = getenv("PATH");
     char *subpath = NULL;
     char *delim = ":";
@@ -72,7 +70,6 @@ int execv_mod(char *argv[])
         subpath = strtok(NULL, delim);
     }
 
-    /* NOTA: creo que usar strcat no es lo ideal, seguro hay otra forma mucho mejor y optima */
     return -1;
 }
 
@@ -129,14 +126,8 @@ int fork_process(char **args, int is_background_proc)
             dup2(fd, 1);
         }
 
-        if (strcmp(args[0], "echo") == 0)
+        if (echo_func(args) == 0)
         {
-            for (size_t pos = 1; args[pos] != NULL; pos++)
-            {
-                fprintf(stdout, "%s ", args[pos]);
-            }
-            fprintf(stdout, "\n");
-            fflush(stdout);
             exit(EXIT_SUCCESS);
         }
 
@@ -156,8 +147,20 @@ int fork_process(char **args, int is_background_proc)
 
 int execute(char **args)
 {
-    /* Run personalized commands */
-    if (run_cmd(args) == 0)
+    /* check if empty string */
+    if (args[0] == NULL)
+    {
+        return 1;
+    }
+    else if (quit_func(args) == 0)
+    {
+        return 0;
+    }
+    else if (cd_func(args) == 0)
+    {
+        return 0;
+    }
+    else if (clr_func(args) == 0)
     {
         return 0;
     }

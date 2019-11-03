@@ -4,6 +4,6 @@
 int fork_process(char **, int);
 int execute(char **);
 int execv_mod(char **);
-int cd_func(char **);
+int check_background_execution(char **);
 
 #endif

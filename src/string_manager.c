@@ -5,11 +5,10 @@
 #include <stdlib.h>
 #include "string_manager.h"
 
-#define MAXSIZE 1024
 
 char *replace_str(char *str, char *orig, char *rep)
 {
-    static char buffer[MAXSIZE];
+    static char buffer[1024];
     char *p;
 
     if (!(p = strstr(str, orig))) // Is 'orig' even in 'str'?

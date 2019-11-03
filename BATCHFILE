@@ -4,6 +4,7 @@ ls
 mkdir archivotest
 cd archivotest
 echo pass 2 > asdf
+   
 echo passing to hello again my old friendsdfsadf > asdf
 ls
 cat asdf

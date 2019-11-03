@@ -7,10 +7,9 @@
 #include "string_manager.h"
 #include "process_exec.h"
 
-#define HOSTNAMEPATH "/proc/sys/kernel/hostname"
-
 void command_mode();
 void batch_mode(char *);
+void print_prompt();
 
 int main(int argc, char *argv[])
 {
@@ -32,17 +31,22 @@ void batch_mode(char *file)
 
     FILE *fp = fopen(file, "r");
     if (fp == NULL)
+    {
         exit(EXIT_FAILURE);
-
+    }
+    
     char buffer[1024];
     char **tokens;
 
     while (fgets(buffer, sizeof buffer, fp) != NULL)
     {
-        // printf("LINE---%s", buffer);
-        tokens = read_tokens(buffer);
-        execute(tokens);
-        free(tokens);
+        printf("LINE---%s", buffer);
+        if (strcmp(buffer, "\n") != 0)
+        {
+            tokens = read_tokens(buffer);
+            execute(tokens);
+            free(tokens);
+        }
     }
 
     fclose(fp);
@@ -51,25 +55,12 @@ void batch_mode(char *file)
 
 void command_mode()
 {
-    FILE *fp = fopen(HOSTNAMEPATH, "r");
-    if (fp == NULL)
-        exit(EXIT_FAILURE);
-
-    char hostname[1024];
-    fgets(hostname, sizeof hostname, fp);
-    hostname[strcspn(hostname, "\n")] = 0;
-
-    char *username = getenv("USER");
-    char *pwd;
-
     char *input;
     char **tokens;
 
     do
     {
-        pwd = getenv("PWD");
-
-        printf("%s@%s:%s$ ", username, hostname, replace_str(pwd, getenv("HOME"), "~"));
+        print_prompt();
         input = read_input();
         tokens = read_tokens(input);
 
@@ -78,4 +69,26 @@ void command_mode()
         free(input);
         free(tokens);
     } while (1);
+}
+
+void print_prompt()
+{
+    char *HOSTNAMEPATH = "/proc/sys/kernel/hostname";
+
+    FILE *fp = fopen(HOSTNAMEPATH, "r");
+    if (fp == NULL)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    char hostname[1024];
+    fgets(hostname, sizeof hostname, fp);
+    hostname[strcspn(hostname, "\n")] = 0;
+
+    char *username = getenv("USER");
+    char *pwd = getenv("PWD");
+
+    printf("%s@%s:%s$ ", username, hostname, replace_str(pwd, getenv("HOME"), "~"));
+
+    fclose(fp);
 }
