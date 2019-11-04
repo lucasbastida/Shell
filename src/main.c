@@ -9,7 +9,6 @@
 
 void command_mode();
 void batch_mode(char *);
-void print_prompt();
 
 int main(int argc, char *argv[])
 {
@@ -34,17 +33,21 @@ void batch_mode(char *file)
     {
         exit(EXIT_FAILURE);
     }
-    
+
     char buffer[1024];
     char **tokens;
 
     while (fgets(buffer, sizeof buffer, fp) != NULL)
     {
-        printf("LINE---%s", buffer);
         if (strcmp(buffer, "\n") != 0)
         {
             tokens = read_tokens(buffer);
             execute(tokens);
+
+            for (size_t i = 0; tokens[i] != NULL; i++)
+            {
+                free(tokens[i]);
+            }
             free(tokens);
         }
     }
@@ -54,24 +57,6 @@ void batch_mode(char *file)
 }
 
 void command_mode()
-{
-    char *input;
-    char **tokens;
-
-    do
-    {
-        print_prompt();
-        input = read_input();
-        tokens = read_tokens(input);
-
-        execute(tokens);
-
-        free(input);
-        free(tokens);
-    } while (1);
-}
-
-void print_prompt()
 {
     char *HOSTNAMEPATH = "/proc/sys/kernel/hostname";
 
@@ -83,12 +68,31 @@ void print_prompt()
 
     char hostname[1024];
     fgets(hostname, sizeof hostname, fp);
-    hostname[strcspn(hostname, "\n")] = 0;
+    fclose(fp);
+
+    hostname[strcspn(hostname, "\n")] = 0; //remove newline character
 
     char *username = getenv("USER");
-    char *pwd = getenv("PWD");
+    char *pwd;
 
-    printf("%s@%s:%s$ ", username, hostname, replace_str(pwd, getenv("HOME"), "~"));
+    char *input;
+    char **tokens;
 
-    fclose(fp);
+    do
+    {
+        pwd = getenv("PWD");
+        printf("%s@%s:%s$ ", username, hostname, replace_str(pwd, getenv("HOME"), "~"));
+        input = read_input();
+        tokens = read_tokens(input);
+
+        execute(tokens);
+
+        for (size_t i = 0; tokens[i] != NULL; i++)
+        {
+            free(tokens[i]);
+        }
+        free(tokens);
+        free(input);
+
+    } while (1);
 }
