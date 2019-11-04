@@ -78,10 +78,14 @@ void command_mode()
     char *input;
     char **tokens;
 
+    // #define GRN "\e[0;32m"
+    // #define BLU "\e[0;34m"
+    // #define reset "\e[0m"
+
     do
     {
         pwd = getenv("PWD");
-        printf("%s@%s:%s$ ", username, hostname, replace_str(pwd, getenv("HOME"), "~"));
+        printf("\x1b[0;32m%s@%s\x1b[0m:\x1b[0;34m%s\x1b[0m$ ", username, hostname, replace_str(pwd, getenv("HOME"), "~"));
         input = read_input();
         tokens = read_tokens(input);
 
