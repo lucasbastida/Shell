@@ -1,3 +1,4 @@
+firefox
 echo hollo
 echo hellow 2
 ls
@@ -11,5 +12,6 @@ cat asdf
 echo hello world again
 cd ..
 echo test2 > asdf2
+clr
 quit
 
