@@ -28,12 +28,22 @@ int cd_func(char **args)
             int change_pwd = chdir(args[1]);
             if (change_pwd != 0)
             {
-                fprintf(stderr, "Error. Couldnt change the directory...\n");
+                switch (change_pwd)
+                {
+                case ENOENT:
+                    fprintf(stderr, "Error. %s doesnt exist...\n", args[1]);
+                    break;
+                case ENOTDIR:
+                    fprintf(stderr, "Error. %s isnt a directory...\n", args[1]);
+                    break;
+                default:
+                    fprintf(stderr, "Error. Couldnt change the directory...\n");
+                }
                 return -1;
             }
 
             char *cwd = getcwd(NULL, 0);
-            setenv("PWD", getcwd(NULL, 0), 1);
+            setenv("PWD", cwd, 1);
 
             free(cwd);
             return 0;
@@ -52,6 +62,13 @@ int echo_func(char **args)
         }
         fprintf(stdout, "\n");
         fflush(stdout);
+
+        for (size_t i = 0; args[i] != NULL; i++)
+        {
+            free(args[i]);
+        }
+        free(args);
+
         return 0;
     }
     return 1;
@@ -61,7 +78,7 @@ int clr_func(char **args)
 {
     if (strcmp(args[0], "clr") == 0)
     {
-        fprintf(stdout, "\033[H\033[2J"); //ASCII escape sequence
+        fprintf(stdout, "\033[H\033[2J"); //\033 = \e ASCII escape sequence
         return 0;
     }
     return 1;
