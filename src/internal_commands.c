@@ -21,7 +21,7 @@ int cd_func(char **args)
     {
         if (args[1] == NULL)
         {
-            fprintf(stderr, "Error. cd sin argumentos...\n");
+            fprintf(stderr, "Error. cd without argumentos...\n");
         }
         else
         {
@@ -63,12 +63,6 @@ int echo_func(char **args)
         fprintf(stdout, "\n");
         fflush(stdout);
 
-        for (size_t i = 0; args[i] != NULL; i++)
-        {
-            free(args[i]);
-        }
-        free(args);
-
         return 0;
     }
     return 1;
@@ -78,7 +72,7 @@ int clr_func(char **args)
 {
     if (strcmp(args[0], "clr") == 0)
     {
-        fprintf(stdout, "\033[H\033[2J"); //\033 = \e ASCII escape sequence
+        fprintf(stdout, "\x1b[H\x1b[2J"); //\033 = \e ASCII escape sequence
         return 0;
     }
     return 1;
