@@ -22,4 +22,4 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) $(OBJ) $(EXE)
+	$(RM) $(OBJ) $(EXE) test
