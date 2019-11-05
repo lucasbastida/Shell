@@ -77,15 +77,13 @@ void command_mode()
 
     char *input;
     char **tokens;
-
-    // #define GRN "\e[0;32m"
-    // #define BLU "\e[0;34m"
-    // #define reset "\e[0m"
-
+    
     do
     {
         pwd = getenv("PWD");
-        printf("\x1b[0;32m%s@%s\x1b[0m:\x1b[0;34m%s\x1b[0m$ ", username, hostname, replace_str(pwd, getenv("HOME"), "~"));
+        printf("\x1b[0;32m%s@%s\x1b[0m:\x1b[0;34m%s\x1b[0m$ ", username, hostname, pwd); //replace_str(pwd, getenv("HOME"), "~")
+        //https://notes.burke.libbey.me/ansi-escape-codes/
+        //https://gist.github.com/RabaDabaDoba/145049536f815903c79944599c6f952a
         input = read_input();
         tokens = read_tokens(input);
 
