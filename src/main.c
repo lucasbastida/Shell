@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "string_manager.h"
+#include "string_functions.h"
 #include "process_exec.h"
 
 void command_mode();

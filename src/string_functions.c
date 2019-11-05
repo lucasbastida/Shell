@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "string_manager.h"
+#include "string_functions.h"
 
 
 char *read_input()
