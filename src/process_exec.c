@@ -36,7 +36,7 @@ int is_background_exec(char **args)
     return 0; //FALSE
 }
 
-int execv_mod(char *file, char *argv[])
+int exec_imp(char *file_name, char *argv[])
 {
 
     /* 
@@ -49,9 +49,9 @@ int execv_mod(char *file, char *argv[])
 
     char buffer[1024];
 
-    if (strchr(file, '/') != NULL)
+    if (strchr(file_name, '/') != NULL)
     {
-        execv(file, argv); //if execv returns then an error occurred
+        execv(file_name, argv); //if execv returns then an error occurred
     }
     else
     {
@@ -59,15 +59,16 @@ int execv_mod(char *file, char *argv[])
         char *path = getenv("PATH");
         if (path == NULL)
         {
-            fprintf(stderr, "PATH variable does not exist");
+            fprintf(stderr, "PATH variable = NULL...");
             return 1;
         }
 
-        size_t len = strlen(file) + 1;
+        size_t filelen = strlen(file_name) + 1;
         size_t pathlen = strlen(path);
 
-        char *name = memcpy(buffer + pathlen + 1, file, len); //copy file name to top of buffer
-        *--name = '/';                                        //add preceeding slash to name
+        /* Add name to end of buffer and set pointer to ->/file_name */
+        char *name = memcpy(buffer + pathlen + 1, file_name, filelen);
+        *--name = '/';
 
         /* Try for current directory */
         char *cur_dir = name - 1;
@@ -77,55 +78,66 @@ int execv_mod(char *file, char *argv[])
 
         /* Try for directories in PATH */
         char *p = path;
-        int got_eacces = 0;
+        int exec_perm_denied = 0;
 
         do
         {
-            char *startp;
+            char *path_dir;
             path = p;
             p = strchr(path, ':');
-            if (!p)
+            if (!p) //if no :, get pointer to terminating null byte
             {
                 p = strchr(path, '\0');
             }
-            if (p == path)
+            if (p == path) //if : is at beginning or end of path
             {
-                /* Two adjacent colons, or a colon at the beginning or the end
-				   of `PATH' means to search the current directory.  */
-                startp = name + 1;
+                path_dir = name + 1; 
             }
             else
             {
-                startp = memcpy(name - (p - path), path, p - path);
+                path_dir = memcpy(name - (p - path), path, p - path); //copy pathname into buffer and point at the beginning of buffer
             }
 
-            execv(startp, argv); //returns only on error.
+            execv(path_dir, argv); //returns only on error.
 
-            switch (errno)
+            switch (errno) //man execve
             {
-            case EACCES: //permission denied, diagnose we found ti but couldnt execute it
-                got_eacces = 1;
-            case ENOENT:
-            case ESTALE:
-            case ENOTDIR:
-            case ENODEV:
-            case ETIMEDOUT:
-            case ENOEXEC: //these errors indicate file missing or not executable by us. so we want to try the next path
+            case EACCES: //permission denied, diagnose we found it but couldnt execute it
+                exec_perm_denied = 1;
+            case ENOENT:  //file_namename doesnt exist, break
+            case ENOTDIR: //component of path or file_namename isnt a directory
+            case ENODEV:  //no such device
+            case ENOEXEC: //these errors indicate file_name missing or not executable by us. so we want to try the next path
                 break;
-            default: // other errors mean we found but something went wrong executing it, return error to
+            case E2BIG: // other errors mean we found but something went wrong executing it, print and return error
+            case EAGAIN:
+            case EFAULT:
+            case EINVAL:
+            case EIO:
+            case EISDIR:
+            case ELOOP:
+            case EMFILE:
+            case ENAMETOOLONG:
+            case ENFILE:
+            case ENOMEM:
+            case EPERM:
+            case ETXTBSY:
+            default:
                 perror("execv");
                 return errno;
             }
 
-        } while (*p++ != '\0');
+        } while (*p++ != '\0'); //in next loop path will point to p and p will get next : in path
 
-        if (got_eacces)
+        /* If not able to execute after checking all paths, warn permission denied */
+        if (exec_perm_denied)
         {
-            return EACCES;
+            fprintf(stderr, "Execute permission is denied for the file\n");
+            return 1;
         }
     }
 
-    fprintf(stderr, "%s: command not found\n", file);
+    fprintf(stderr, "%s: command not found\n", file_name);
     return errno;
 }
 
@@ -163,9 +175,8 @@ int fork_process(char **args)
             }
             else if (*args[i] == '>' && args[i + 1])
             {
-                //int = fd = open(args[i + 1],
-                //    O_WRONLY | O_CREAT, + TRUNCATE TO 0 EQUIV
-                //    S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+                //int fd = open(args[i + 1], O_WRONLY | O_CREAT | O_TRUNCATE, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+                //creat es equiv to the above O_WRONLY | O_CREAT | O_TRUNCATE
 
                 if ((fd = creat(args[i + 1], S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1)
                 {
@@ -173,7 +184,7 @@ int fork_process(char **args)
                     exit(EXIT_FAILURE);
                 }
                 dup2(fd, STDOUT_FILENO);
-                // dup2(fd, 2); ADD STDOUT_ERROR?
+                // dup2(fd, STDERR_FILENO); ADD STDOUT_ERROR?
                 close(fd);
                 while (args[i])
                 {
@@ -191,7 +202,7 @@ int fork_process(char **args)
             _exit(EXIT_SUCCESS); //prevents stdio buffers to be flushed twice and temporary files might be removed
         }
 
-        execv_mod(args[0], args);
+        exec_imp(args[0], args);
         abort();
     }
 
