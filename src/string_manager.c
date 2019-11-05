@@ -8,10 +8,10 @@
 
 char *read_input()
 {
-    char *input = NULL;
-    size_t bufsize = 0;
-    getline(&input, &bufsize, stdin);
-    return input;
+    char *lineptr = NULL;
+    size_t n = 0;
+    getline(&lineptr, &n, stdin);
+    return lineptr;
 }
 
 char **read_tokens(char *line)
