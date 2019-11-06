@@ -12,6 +12,7 @@ cat testcat
 echo qwerwerwer qwerwerwer > testcat2
 cat testcat2
 cat testcat > testcat2
+cat testcat2
 echo passing to hello again my old friendsdfsadf > asdf
 ls
 cat asdf
