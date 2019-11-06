@@ -1,19 +1,25 @@
 gcc -o test test.c
+test &
+mkdir testdir
+gcc -o ./testdir/test test.c
 firefox
 echo hollo
 echo hellow 2
 ls
-mkdir archivotest
-cd archivotest
-echo pass 2 > asdf
-   
+cd testdir
+echo asdfasdfsadfasdfsafd asfdasdf asdfasdf > testcat
+cat testcat
+echo qwerwerwer qwerwerwer > testcat2
+cat testcat2
+cat testcat > testcat2
 echo passing to hello again my old friendsdfsadf > asdf
 ls
 cat asdf
 echo hello world again
+test &
 cd ..
-echo test2 > asdf2
+ls
+test
 clr
-test 
 quit
 
