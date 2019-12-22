@@ -4,6 +4,8 @@ Command-line interpreter.
 It has the ability to read and evaluate commands from a file passed in as argument.
 If it's executed without arguments it will print a command prompt and wait for user input.
 
+![shell screenshot](img/shell.png)
+
 ## Project Objectives
 - using linux mechanisms for creating processes
 - use linux IPC and concurrency mechanisms
